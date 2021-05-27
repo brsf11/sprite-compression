@@ -79,7 +79,7 @@ int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq)
     return SeqPointer+1;
 }
 
-void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree)
+void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen)
 {
     unsigned lit_hist[29],dist_hist[17],lit_hist_temp[28],dist_hist_temp[16];
     unsigned char litTree_temp[28],distTree_temp[16];
@@ -164,10 +164,10 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
         }
     }
 
-    int DistLen = packageMerge(8,numCodeDist,dist_hist_temp,distTree_temp);
-    int LitLen  = packageMerge(8,numCodeLit,lit_hist_temp,litTree_temp);
+    codeLen[1] = packageMerge(8,numCodeDist,dist_hist_temp,distTree_temp);
+    codeLen[0] = packageMerge(8,numCodeLit,lit_hist_temp,litTree_temp);
 
-    if((DistLen!=0)&&(LitLen!=0))
+    if((codeLen[1]!=0)&&(codeLen[0]!=0))
     {
         for(i=0;i<numCodeDist;i++)
         {
@@ -177,5 +177,33 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
         {
             litTree[litTree_idx[i]] = litTree_temp[i];
         }
+    }
+}
+
+void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code)
+{
+    unsigned char len;
+    int prefix = 0;
+    int i;
+
+    for(i=0;i<numTree;i++)
+    {
+        if(tree[i] == 0)
+        {
+            code[i] = 0;
+        }
+    }
+
+    for(len=1;len<=numMax;len++)
+    {
+        for(i=0;i<numTree;i++)
+        {
+            if(tree[i] == len)
+            {
+                code[i] = prefix;
+                prefix++;
+            }
+        }
+        prefix <<= 1;
     }
 }

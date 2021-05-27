@@ -36,5 +36,6 @@ static const unsigned lzbDistExBitTab[] = {
 void Byte2Fb(const char* source,char* dest,unsigned numSource);
 uint32_t matchSeq(const char* windowSP,const char* seqSP,const char* sourceSP,const char* enSP);
 int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq);
-void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree);
+void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen);
+void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code);
 #endif
