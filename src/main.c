@@ -1,31 +1,26 @@
 #include<stdio.h>
 #include<stdbool.h>
 #include"packagemerge.h"
+#include"lzb.h"
 
 int main()
 {
-    unsigned char maxLength;
-    unsigned numCode;
-    unsigned histogram[10] = {1,3,2,6,10,1,2,17,9,6};
-    unsigned char codeLength[10]= {0};
+    char source[]={'a','b','c','d','b','c','d','c','b','c','d','c','b','c','a','d'};
+    char source_4b[32];
+    LZSeq lzseq[32];
+
+    Byte2Fb(source,source_4b,16);
+    int seqLen = lzbCompress(source_4b,32,lzseq);
 
     int i;
-
-    maxLength = 6;
-    numCode = 10;
-    int fi = packageMerge(maxLength,numCode,histogram,codeLength);
-
-    if(fi)
+    for(i=0;i<32;i++)
     {
-        printf("max code length: %d\n",fi);
-        for(i=0;i<numCode;i++)
-        {
-            printf("%2d: %d\n",i,(unsigned)codeLength[i]);
-        }
+        printf("%X ",source_4b[i]);
     }
-    else
+    printf("\n");
+    for(i=0;i<seqLen;i++)
     {
-        printf("failed\n");
+        printf("%2d %2d %4X\n",lzseq[i].dist,lzseq[i].len,lzseq[i].ch);
     }
 
     return 0;
