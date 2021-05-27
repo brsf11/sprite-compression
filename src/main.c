@@ -7,21 +7,25 @@ int main()
 {
     char source[]={'a','b','c','d','b','c','d','c','b','c','d','c','b','c','a','d'};
     char source_4b[32];
+    unsigned char litTree[28],distTree[16];
     LZSeq lzseq[32];
 
     Byte2Fb(source,source_4b,16);
-    int seqLen = lzbCompress(source_4b,32,lzseq);
+    unsigned seqLen = lzbCompress(source_4b,32,lzseq);
 
+    genLzbHufTree(lzseq,seqLen,litTree,distTree);
+    
     int i;
-    for(i=0;i<32;i++)
+    for(i=0;i<16;i++)
     {
-        printf("%X ",source_4b[i]);
+        printf("%d",distTree[i]);
     }
     printf("\n");
-    for(i=0;i<seqLen;i++)
+    for(i=0;i<28;i++)
     {
-        printf("%2d %2d %4X\n",lzseq[i].dist,lzseq[i].len,lzseq[i].ch);
+        printf("%d",litTree[i]);
     }
+    printf("\n");
 
     return 0;
 }
