@@ -22,25 +22,55 @@ uint32_t matchSeq(const char* windowSP,const char* seqSP,const char* sourceSP,co
         char* tempWinSP = sp;
         char* tempSeqSP = seqSP;
         unsigned tempLen = 0;
-        while((*tempWinSP == *tempSeqSP)&&(tempSeqSP <= enSP))
+        while((*tempWinSP == *tempSeqSP)&&(tempSeqSP <= enSP)&&(tempLen<=256))
         {
             tempWinSP++;
             tempSeqSP++;
             tempLen++;
         }
         len[windowSP-sp] = tempLen;
-        printf("%c %c %d\n",*sp,*tempSeqSP,len[windowSP-sp]);
         sp--;
     }
     unsigned char temp = 0;
     unsigned char i;
-    for(i=0;i<windowSP-sp-1;i++)
+    for(i=0;i<windowSP-sp;i++)
     {
         if(len[i]>len[temp])
         {
             temp = i;
         }
     }
-    printf("%d %d\n",temp,len[temp]);
     return (((uint32_t)temp+1)<<16) + len[temp];
+}
+
+int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq)
+{
+    char* ComPointer = source+1;
+    unsigned SeqPointer = 0;
+    lzseq[SeqPointer].dist = 0;
+    lzseq[SeqPointer].len  = 0;
+    lzseq[SeqPointer].ch   = *source;
+
+    while(ComPointer-source<numSource)
+    {
+        uint32_t matchRes = matchSeq(ComPointer-1,ComPointer,source,source+numSource-1);
+        unsigned len  = matchRes & 0x001f;
+        unsigned dist = matchRes >> 16;
+        SeqPointer++;
+        if(len>=3)
+        {
+            lzseq[SeqPointer].dist = dist;
+            lzseq[SeqPointer].len  = len;
+            lzseq[SeqPointer].ch   = 0;
+            ComPointer += len;
+        }
+        else
+        {
+            lzseq[SeqPointer].dist = 0;
+            lzseq[SeqPointer].len  = 0;
+            lzseq[SeqPointer].ch   = *ComPointer;
+            ComPointer++;
+        }
+    }
+    return SeqPointer+1;
 }
