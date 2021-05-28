@@ -2,7 +2,7 @@
 #include<stdint.h>
 #include<stdio.h>
 
-void Byte2Fb(const char* source,char* dest,unsigned numSource)
+void Byte2Fb(const unsigned char* source,unsigned char* dest,unsigned numSource)
 {
     int i;
     for(i=0;i<numSource;i++)
@@ -12,15 +12,15 @@ void Byte2Fb(const char* source,char* dest,unsigned numSource)
     }
 }
 
-uint32_t matchSeq(const char* windowSP,const char* seqSP,const char* sourceSP,const char* enSP)
+uint32_t matchSeq(const unsigned char* windowSP,const unsigned char* seqSP,const unsigned char* sourceSP,const unsigned char* enSP)
 {
     unsigned len[256];
-    char* sp;
+    unsigned char* sp;
     sp = windowSP;
     while((sp >= sourceSP)&&(seqSP-sp <= 256))
     {
-        char* tempWinSP = sp;
-        char* tempSeqSP = seqSP;
+        unsigned char* tempWinSP = sp;
+        unsigned char* tempSeqSP = seqSP;
         unsigned tempLen = 0;
         while((*tempWinSP == *tempSeqSP)&&(tempSeqSP <= enSP)&&(tempLen<=256))
         {
@@ -44,9 +44,9 @@ uint32_t matchSeq(const char* windowSP,const char* seqSP,const char* sourceSP,co
     return (((uint32_t)temp+2)<<16) + len[temp];
 }
 
-int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq)
+int lzbCompress(const unsigned char* source,unsigned numSource,LZSeq* lzseq)
 {
-    char* ComPointer = source+2;
+    unsigned char* ComPointer = source+2;
     unsigned SeqPointer = 0;
     lzseq[SeqPointer].dist = 0;
     lzseq[SeqPointer].len  = 0;

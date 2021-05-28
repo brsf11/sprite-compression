@@ -5,19 +5,21 @@
 
 int main()
 {
-    char source[]={'a','b','c','d','b','c','d','c','b','c','d','c','b','c','a','d'};
-    char source_4b[32];
+    unsigned char source[]={0xff,0xff,0xff,0xff,0x00,0x00,0x00,0x00,0xff,0xff,0xff,0xff,0x00,
+                            0x00,0x00,0x00,0x00,0xff,0xff,0xff,0xff,0x00,0x00,0x00,0x00,0x00,
+                            0xff,0xff,0xff,0xff,0x00,0x00,0x00,0x00,0xff,0xff,0xff,0xff};
+    unsigned char source_4b[76];
     
     unsigned char codeLen[2];
     unsigned char litTree[28],distTree[16],uniTree[44];
     unsigned char uniSq[44];
     unsigned char litCode[28],distCode[16],uniCode[44],CCL[10];
     unsigned char textBitstream[32];
-    unsigned seq[32],sqHist[10];
-    LZSeq lzseq[32];
+    unsigned seq[76],sqHist[10];
+    LZSeq lzseq[76];
 
-    Byte2Fb(source,source_4b,16);
-    unsigned lzbSeqLen = lzbCompress(source_4b,32,lzseq);
+    Byte2Fb(source,source_4b,38);
+    unsigned lzbSeqLen = lzbCompress(source_4b,76,lzseq);
 
     genLzbHufTree(lzseq,lzbSeqLen,litTree,distTree,codeLen);
     
@@ -43,7 +45,18 @@ int main()
     }
     packageMerge(7,10,sqHist,CCL);
 
-
+    for(i=0;i<lzbSeqLen;i++)
+    {
+        if(lzseq[i].len != 0)
+        {
+            printf("%2d %2d|",lzseq[i].len,lzseq[i].dist);
+        }
+        else
+        {
+            printf("%2d|",lzseq[i].ch);
+        }
+    }
+    printf("\n");
 
     for(i=0;i<44;i++)
     {

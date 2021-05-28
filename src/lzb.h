@@ -7,7 +7,7 @@ typedef struct
 {
     unsigned dist;
     unsigned len;
-    char ch;
+    unsigned char ch;
 }LZSeq;
 
 static const unsigned lzbLenOffTab[] = {
@@ -33,9 +33,9 @@ static const unsigned lzbDistExBitTab[] = {
       5,   5,   5,   5
 };
 
-void Byte2Fb(const char* source,char* dest,unsigned numSource);
-uint32_t matchSeq(const char* windowSP,const char* seqSP,const char* sourceSP,const char* enSP);
-int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq);
+void Byte2Fb(const unsigned char* source,unsigned char* dest,unsigned numSource);
+uint32_t matchSeq(const unsigned char* windowSP,const unsigned char* seqSP,const unsigned char* sourceSP,const unsigned char* enSP);
+int lzbCompress(const unsigned char* source,unsigned numSource,LZSeq* lzseq);
 void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen);
 void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code);
 unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq);
