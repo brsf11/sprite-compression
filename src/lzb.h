@@ -38,4 +38,6 @@ uint32_t matchSeq(const char* windowSP,const char* seqSP,const char* sourceSP,co
 int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq);
 void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen);
 void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code);
+unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq);
+int genBitstream(unsigned char* code,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream);
 #endif

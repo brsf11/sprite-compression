@@ -54,13 +54,13 @@ int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq)
     lzseq[SeqPointer+1].dist = 0;
     lzseq[SeqPointer+1].len  = 0;
     lzseq[SeqPointer+1].ch   = *(source+1);
+    SeqPointer+=2;
 
     while(ComPointer-source<numSource)
     {
         uint32_t matchRes = matchSeq(ComPointer-2,ComPointer,source,source+numSource-1);
         unsigned len  = matchRes & 0x001f;
         unsigned dist = matchRes >> 16;
-        SeqPointer++;
         if(len>=6)
         {
             lzseq[SeqPointer].dist = dist;
@@ -75,8 +75,9 @@ int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq)
             lzseq[SeqPointer].ch   = *ComPointer;
             ComPointer++;
         }
+        SeqPointer++;
     }
-    return SeqPointer+1;
+    return SeqPointer;
 }
 
 void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen)
@@ -180,6 +181,49 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
     }
 }
 
+unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq)
+{
+    int i;
+    unsigned sp = 0;
+    for(i=0;i<numSeq;i++)
+    {
+        if(lzseq[i].len==0)
+        {
+            seq[sp] = lzseq[i].ch;
+            sp++;
+        }
+        else
+        {
+            int j;
+            for(j=0;j<12;j++)
+            {
+                if(lzseq[i].len >= lzbLenOffTab[j])
+                {
+                    seq[sp] = j + 16;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            sp++;
+            for(j=0;j<12;j++)
+            {
+                if(lzseq[i].dist >= lzbDistOffTab[j])
+                {
+                    seq[sp] = j + 28;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            sp++;
+        }
+    }
+    return sp;
+}
+
 void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code)
 {
     unsigned char len;
@@ -206,4 +250,9 @@ void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned
         }
         prefix <<= 1;
     }
+}
+
+int genBitstream(unsigned char* code,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream)
+{
+
 }
