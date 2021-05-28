@@ -7,12 +7,13 @@ int main()
 {
     char source[]={'a','b','c','d','b','c','d','c','b','c','d','c','b','c','a','d'};
     char source_4b[32];
+    
     unsigned char codeLen[2];
     unsigned char litTree[28],distTree[16],uniTree[44];
     unsigned char uniSq[44];
-    unsigned char litCode[28],distCode[16],uniCode[44];
+    unsigned char litCode[28],distCode[16],uniCode[44],CCL[10];
     unsigned char textBitstream[32];
-    unsigned seq[32];
+    unsigned seq[32],sqHist[10];
     LZSeq lzseq[32];
 
     Byte2Fb(source,source_4b,16);
@@ -29,50 +30,20 @@ int main()
     combCode(litCode,28,distCode,16,uniCode);
 
     unsigned numSq = tree2Sq(uniTree,44,uniSq);
-
-
-
-
     int i;
-    for(i=0;i<16;i++)
-    {
-        printf("%2d ",distTree[i]);
-    }
-    printf("\n");
-    for(i=0;i<16;i++)
-    {
-        printf("%2d ",distCode[i]);
-    }
-    printf("\n");
-    for(i=0;i<28;i++)
-    {
-        printf("%2d ",litTree[i]);
-    }
-    printf("\n");
-    for(i=0;i<28;i++)
-    {
-        printf("%2d ",litCode[i]);
-    }
-    printf("\n");
 
-    for(i=0;i<lzbSeqLen;i++)
+    for(i=0;i<10;i++)
     {
-        if(lzseq[i].len == 0)
-        {
-            printf("%2d ",lzseq[i].ch);
-        }
-        else
-        {
-            printf("%2d %2d ",lzseq[i].len,lzseq[i].dist);
-        }
+        sqHist[i] = 0;
     }
-    printf("\n");
 
-    for(i=0;i<seqLen;i++)
+    for(i=0;i<numSq;i++)
     {
-        printf("%2d ",seq[i]);
+        sqHist[uniSq[i]]++;
     }
-    printf("\n");
+    packageMerge(7,10,sqHist,CCL);
+
+
 
     for(i=0;i<44;i++)
     {
@@ -83,6 +54,18 @@ int main()
     for(i=0;i<numSq;i++)
     {
         printf("%d",uniSq[i]);
+    }
+    printf("\n");
+
+    for(i=0;i<10;i++)
+    {
+        printf("%d",sqHist[i]);
+    }
+    printf("\n");
+
+    for(i=0;i<10;i++)
+    {
+        printf("%d",CCL[i]);
     }
     printf("\n");
 
