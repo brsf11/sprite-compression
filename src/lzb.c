@@ -224,6 +224,20 @@ unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq)
     return sp;
 }
 
+unsigned char* combCode(unsigned char* code1,unsigned numCode1,unsigned char* code2,unsigned numCode2,unsigned char* uniCode)
+{
+    unsigned i;
+    for(i=0;i<numCode1;i++)
+    {
+        uniCode[i] = code1[i];
+    }
+    for(i=0;i<numCode2;i++)
+    {
+        uniCode[i+numCode1] = code2[i];
+    }
+    return uniCode;
+}
+
 void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code)
 {
     unsigned char len;
@@ -252,7 +266,89 @@ void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned
     }
 }
 
-int genBitstream(unsigned char* code,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream)
+unsigned tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq)
+{
+    int i;
+    unsigned numZero,flagZero;
+    unsigned sqSP = 0;
+    numZero  = 0;
+    flagZero = 0;
+    for(i=0;i<numTree;i++)
+    {
+        if(tree[i] == 0)
+        {
+            if(flagZero)
+            {
+                numZero++;
+            }
+            else
+            {
+                flagZero = 1;
+                numZero++;
+            }
+            if(numZero == 10)
+            {
+                sq[sqSP]   = 9;
+                sq[sqSP+1] = 7;
+                flagZero   = 0;
+                numZero    = 0;
+                sqSP      += 2;
+            }
+        }
+        else
+        {
+            if(flagZero)
+            {
+                if(numZero < 3)
+                {
+                    int j;
+                    for(j=0;j<numZero;j++)
+                    {
+                        sq[sqSP] = 0;
+                        sqSP++;
+                    }
+                    flagZero = 0;
+                    numZero  = 0;
+                }
+                else
+                {
+                    sq[sqSP]   = 9;
+                    sq[sqSP+1] = numZero-3;
+                    flagZero   = 0;
+                    numZero    = 0;
+                    sqSP      += 2;
+                }
+            }
+            sq[sqSP] = tree[i];
+            sqSP++;
+        }
+    }
+    if(flagZero)
+    {
+        if(numZero < 3)
+        {
+            int j;
+            for(j=0;j<numZero;j++)
+            {
+                sq[sqSP] = 0;
+                sqSP++;
+            }
+            flagZero = 0;
+            numZero  = 0;
+        }
+        else
+        {
+            sq[sqSP]   = 9;
+            sq[sqSP+1] = numZero-3;
+            flagZero   = 0;
+            numZero    = 0;
+            sqSP      += 2;
+        }
+    }
+    return sqSP;
+}
+
+int genBitstream(unsigned char* code,unsigned char* tree,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream,char bitSp)
 {
 
 }

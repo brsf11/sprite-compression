@@ -8,8 +8,9 @@ int main()
     char source[]={'a','b','c','d','b','c','d','c','b','c','d','c','b','c','a','d'};
     char source_4b[32];
     unsigned char codeLen[2];
-    unsigned char litTree[28],distTree[16];
-    unsigned char litCode[28],distCode[16];
+    unsigned char litTree[28],distTree[16],uniTree[44];
+    unsigned char uniSq[44];
+    unsigned char litCode[28],distCode[16],uniCode[44];
     unsigned char textBitstream[32];
     unsigned seq[32];
     LZSeq lzseq[32];
@@ -23,6 +24,13 @@ int main()
     huffTree2Code(distTree,16,codeLen[1],distCode);
 
     unsigned seqLen = lzb2Seq(lzseq,lzbSeqLen,seq);
+
+    combCode(litTree,28,distTree,16,uniTree);
+    combCode(litCode,28,distCode,16,uniCode);
+
+    unsigned numSq = tree2Sq(uniTree,44,uniSq);
+
+
 
 
     int i;
@@ -63,6 +71,18 @@ int main()
     for(i=0;i<seqLen;i++)
     {
         printf("%2d ",seq[i]);
+    }
+    printf("\n");
+
+    for(i=0;i<44;i++)
+    {
+        printf("%d",uniTree[i]);
+    }
+    printf("\n");
+
+    for(i=0;i<numSq;i++)
+    {
+        printf("%d",uniSq[i]);
     }
     printf("\n");
 

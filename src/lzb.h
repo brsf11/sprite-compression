@@ -39,5 +39,7 @@ int lzbCompress(const char* source,unsigned numSource,LZSeq* lzseq);
 void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen);
 void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code);
 unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq);
-int genBitstream(unsigned char* code,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream);
+unsigned char* combCode(unsigned char* code1,unsigned numCode1,unsigned char* code2,unsigned numCode2,unsigned char* uniCode);
+unsigned tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq);
+int genBitstream(unsigned char* code,unsigned char* tree,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream,char bitSp);
 #endif
