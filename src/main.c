@@ -11,9 +11,9 @@ int main()
     unsigned char source_4b[76];
     
     unsigned char codeLen[2];
-    unsigned char litTree[28],distTree[16],uniTree[44];
-    unsigned char uniSq[44];
-    unsigned char litCode[28],distCode[16],uniCode[44],CCL[10],sqCode[10];
+    unsigned char litTree[29],distTree[16],uniTree[45];
+    unsigned char uniSq[45];
+    unsigned char litCode[29],distCode[16],uniCode[45],CCL[10],sqCode[10];
     unsigned char Bitstream[38];
     unsigned seq[76],sqHist[10];
     LZSeq lzseq[76];
@@ -54,7 +54,7 @@ int main()
     }
     printf("\n");
 
-    for(i=0;i<44;i++)
+    for(i=0;i<45;i++)
     {
         printf("%d",lzb.uniTree[i]);
     }

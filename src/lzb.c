@@ -77,16 +77,20 @@ int lzbCompress(const unsigned char* source,unsigned numSource,LZSeq* lzseq)
         }
         SeqPointer++;
     }
+    lzseq[SeqPointer].dist = 0;
+    lzseq[SeqPointer].len  = 0;
+    lzseq[SeqPointer].ch   = 16;
+    SeqPointer++;
     return SeqPointer;
 }
 
 void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen)
 {
-    unsigned lit_hist[29],dist_hist[17];
+    unsigned lit_hist[30],dist_hist[17];
 
     int i,j;
 
-    for(i=0;i<29;i++)
+    for(i=0;i<30;i++)
     {
         lit_hist[i] = 0;
     }
@@ -94,7 +98,7 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
     {
         dist_hist[i] = 0;
     }
-    for(i=0;i<28;i++)
+    for(i=0;i<29;i++)
     {
         litTree[i] = 0;
     }
@@ -133,11 +137,11 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
         {
             if(lzseq[j].len>=lzbLenOffTab[i]) num++;
         }
-        lit_hist[i+16] = num;
+        lit_hist[i+17] = num;
     }
     for(i=0;i<12;i++)
     {
-        lit_hist[i+16] -=lit_hist[i+16+1];
+        lit_hist[i+17] -=lit_hist[i+17+1];
     }
 
     codeLen[1] = packageMerge(8,numDist,dist_hist,distTree);
@@ -163,7 +167,7 @@ unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq)
             {
                 if(lzseq[i].len >= lzbLenOffTab[j])
                 {
-                    seq[sp] = j + 16;
+                    seq[sp] = j + 17;
                 }
                 else
                 {
@@ -175,7 +179,7 @@ unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq)
             {
                 if(lzseq[i].dist >= lzbDistOffTab[j])
                 {
-                    seq[sp] = j + 28;
+                    seq[sp] = j + 29;
                 }
                 else
                 {

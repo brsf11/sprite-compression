@@ -36,7 +36,7 @@ typedef struct
       unsigned char* Bitstream;
 }LZB;
 
-static const unsigned char numLit  = 28;
+static const unsigned char numLit  = 29;
 static const unsigned char numDist = 16;
 
 static const unsigned lzbLenOffTab[] = {
