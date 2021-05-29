@@ -82,9 +82,7 @@ int lzbCompress(const unsigned char* source,unsigned numSource,LZSeq* lzseq)
 
 void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen)
 {
-    unsigned lit_hist[29],dist_hist[17],lit_hist_temp[28],dist_hist_temp[16];
-    unsigned char litTree_temp[28],distTree_temp[16];
-    unsigned litTree_idx[28],distTree_idx[16],numCodeLit,numCodeDist;
+    unsigned lit_hist[29],dist_hist[17];
 
     int i,j;
 
@@ -104,8 +102,6 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
     {
         distTree[i] = 0;
     }
-    numCodeDist = 0;
-    numCodeLit  = 0;
 
     for(i=0;i<16;i++)
     {
@@ -119,12 +115,6 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
     for(i=0;i<16;i++)
     {
         dist_hist[i] -=dist_hist[i+1];
-        if(dist_hist[i]!=0)
-        {
-            dist_hist_temp[numCodeDist] = dist_hist[i];
-            distTree_idx[numCodeDist]  = i;
-            numCodeDist++;
-        }
     }
 
     for(i=0;i<seqLen;i++)
@@ -135,15 +125,6 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
         }
     }
 
-    for(i=0;i<16;i++)
-    {
-        if(lit_hist[i]!=0)
-        {
-            lit_hist_temp[numCodeLit] = lit_hist[i];
-            litTree_idx[numCodeLit]  = i;
-            numCodeLit++;
-        }
-    }
 
     for(i=0;i<12;i++)
     {
@@ -157,28 +138,11 @@ void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned 
     for(i=0;i<12;i++)
     {
         lit_hist[i+16] -=lit_hist[i+16+1];
-        if(lit_hist[i+16]!=0)
-        {
-            lit_hist_temp[numCodeLit] = lit_hist[i+16];
-            litTree_idx[numCodeLit]  = i+16;
-            numCodeLit++;
-        }
     }
 
-    codeLen[1] = packageMerge(8,numCodeDist,dist_hist_temp,distTree_temp);
-    codeLen[0] = packageMerge(8,numCodeLit,lit_hist_temp,litTree_temp);
+    codeLen[1] = packageMerge(8,numDist,dist_hist,distTree);
+    codeLen[0] = packageMerge(8,numLit,lit_hist,litTree);
 
-    if((codeLen[1]!=0)&&(codeLen[0]!=0))
-    {
-        for(i=0;i<numCodeDist;i++)
-        {
-            distTree[distTree_idx[i]] = distTree_temp[i];
-        }
-        for(i=0;i<numCodeLit;i++)
-        {
-            litTree[litTree_idx[i]] = litTree_temp[i];
-        }
-    }
 }
 
 unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq)
@@ -384,7 +348,7 @@ int LZBPrepare(LZB* lzb)
     return 1;
 }
 
-unsigned assembBits(unsigned char* Bitstream,)
+unsigned assembBits(unsigned char* Bitstream)
 {
 
 }
