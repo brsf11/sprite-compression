@@ -362,6 +362,7 @@ unsigned assembBits(unsigned char* Bitstream,unsigned* bias,unsigned char code,u
     }
     else
     {
+        *(Bitstream+1)  = 0;
         *Bitstream     |= code >> (*bias+codeWidth-8);
         *(Bitstream+1) |= code << (16-*bias-codeWidth);
         *bias += codeWidth-8;
@@ -394,6 +395,7 @@ int genBitstream(LZB* lzb)
     unsigned bias = 0;
     int i;
     ByteSP = lzb->Bitstream;
+    *ByteSP = 0;
 
     ByteSP += assembBits(ByteSP,&bias,lzb->Header,3);
 
@@ -407,13 +409,28 @@ int genBitstream(LZB* lzb)
         ByteSP += assembBits(ByteSP,&bias,lzb->sqCode[lzb->uniSq[i]],lzb->CCL[lzb->uniSq[i]]);
     }
 
-    for(i=0;i<lzb->seqLen;i++)
+    unsigned seqSP = 0;
+
+    for(i=0;i<lzb->lzbSeqLen;i++)
     {
-        ByteSP += assembBits(ByteSP,&bias,lzb->uniCode[lzb->seq[i]],lzb->uniTree[lzb->seq[i]]);
+        if(lzb->lzseq[i].len == 0)
+        {
+            ByteSP += assembBits(ByteSP,&bias,lzb->litCode[lzb->lzseq[i].ch],lzb->litTree[lzb->lzseq[i].ch]);
+            seqSP++;
+        }
+        else
+        {
+            ByteSP += assembBits(ByteSP,&bias,lzb->uniCode[lzb->seq[seqSP]],lzb->uniTree[lzb->seq[seqSP]]);
+            ByteSP += assembBits(ByteSP,&bias,(lzb->lzseq[i].len  - lzbLenOffTab[lzb->seq[seqSP]-17])/2,lzbLenExBitTab[lzb->seq[seqSP]-17]);
+            seqSP++;
+            ByteSP += assembBits(ByteSP,&bias,lzb->uniCode[lzb->seq[seqSP]],lzb->uniTree[lzb->seq[seqSP]]);
+            ByteSP += assembBits(ByteSP,&bias,(lzb->lzseq[i].dist - lzbDistOffTab[lzb->seq[seqSP]-29])/2,lzbDistExBitTab[lzb->seq[seqSP]-29]);
+            seqSP++;
+        }
     }
+    
 
     ByteSP += assembBits(ByteSP,&bias,0,8-bias);
-
     reverseBytes(lzb->Bitstream,ByteSP-lzb->Bitstream);
 
     return ByteSP-lzb->Bitstream;

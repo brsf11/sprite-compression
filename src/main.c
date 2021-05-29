@@ -56,6 +56,18 @@ int main()
     }
     printf("\n");
 
+    for(i=0;i<lzb.seqLen;i++)
+    {
+        printf("%2d",lzb.seq[i]);
+    }
+    printf("\n");
+
+    for(i=0;i<45;i++)
+    {
+        printf("%2d",lzb.uniCode[i]);
+    }
+    printf("\n");
+
     for(i=0;i<45;i++)
     {
         printf("%d",lzb.uniTree[i]);
