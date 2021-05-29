@@ -350,6 +350,8 @@ unsigned tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq)
 
 int LZBPrepare(LZB* lzb)
 {
+    lzb->Header = 5;
+
     Byte2Fb(lzb->source,lzb->source_4b,lzb->numSource);
     lzb->lzbSeqLen = lzbCompress(lzb->source_4b,lzb->numSource*2,lzb->lzseq);
 
@@ -382,7 +384,12 @@ int LZBPrepare(LZB* lzb)
     return 1;
 }
 
-int genBitstream(unsigned char* code,unsigned char* tree,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream,char bitSp)
+unsigned assembBits(unsigned char* Bitstream,)
+{
+
+}
+
+int genBitstream(LZB* lzb)
 {
 
 }

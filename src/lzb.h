@@ -12,6 +12,7 @@ typedef struct
 
 typedef struct
 {
+      unsigned Header;
       unsigned char* source;
       unsigned numSource;
       unsigned char* source_4b;
@@ -31,7 +32,8 @@ typedef struct
       unsigned char* CCL;
       unsigned char* sqCode;
       unsigned* sqHist;
-      unsigned sqCodeLen; 
+      unsigned sqCodeLen;
+      unsigned char* Bitstream;
 }LZB;
 
 static const unsigned char numLit  = 28;
@@ -69,5 +71,5 @@ unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq);
 unsigned char* combCode(unsigned char* code1,unsigned numCode1,unsigned char* code2,unsigned numCode2,unsigned char* uniCode);
 unsigned tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq);
 int LZBPrepare(LZB* lzb);
-int genBitstream(unsigned char* code,unsigned char* tree,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream,char bitSp);
+int genBitstream(LZB* lzb);
 #endif

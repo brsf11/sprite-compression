@@ -14,7 +14,7 @@ int main()
     unsigned char litTree[28],distTree[16],uniTree[44];
     unsigned char uniSq[44];
     unsigned char litCode[28],distCode[16],uniCode[44],CCL[10],sqCode[10];
-    unsigned char textBitstream[32];
+    unsigned char Bitstream[38];
     unsigned seq[76],sqHist[10];
     LZSeq lzseq[76];
 
@@ -35,6 +35,7 @@ int main()
     lzb.CCL       = CCL;
     lzb.sqHist    = sqHist;
     lzb.sqCode    = sqCode;
+    lzb.Bitstream = Bitstream;
 
     LZBPrepare(&lzb);
     
