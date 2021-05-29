@@ -32,6 +32,7 @@ int main()
     combCode(litCode,28,distCode,16,uniCode);
 
     unsigned numSq = tree2Sq(uniTree,44,uniSq);
+
     int i;
 
     for(i=0;i<10;i++)
@@ -44,6 +45,9 @@ int main()
         sqHist[uniSq[i]]++;
     }
     packageMerge(7,10,sqHist,CCL);
+
+
+    
 
     for(i=0;i<lzbSeqLen;i++)
     {

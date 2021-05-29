@@ -5,10 +5,29 @@
 
 typedef struct
 {
-    unsigned dist;
-    unsigned len;
-    unsigned char ch;
+      unsigned dist;
+      unsigned len;
+      unsigned char ch;
 }LZSeq;
+
+typedef struct
+{
+      unsigned char* source;
+      unsigned numSource;
+      unsigned char* sorce_4b;
+      LZSeq* lzseq;
+      unsigned lzbSeqLen;
+      unsigned char* codeLen;
+      unsigned char* litTree,distTree;
+      const unsigned char numLit  = 28;
+      const unsigned char numDist = 16;
+      unsigned char* litCode,distCode;
+      unsigned seqLen;
+      unsigned* seq;
+      unsigned char* uniTree,uniCode,uniSq;
+      unsigned numSq;
+      unsigned char* CCL; 
+}LZB;
 
 static const unsigned lzbLenOffTab[] = {
       6,   8,  10,  12,
