@@ -62,14 +62,16 @@ static const unsigned lzbDistExBitTab[] = {
       5,   5,   5,   5
 };
 
-void Byte2Fb(const unsigned char* source,unsigned char* dest,unsigned numSource);
-uint32_t matchSeq(const unsigned char* windowSP,const unsigned char* seqSP,const unsigned char* sourceSP,const unsigned char* enSP);
-int lzbCompress(const unsigned char* source,unsigned numSource,LZSeq* lzseq);
-void genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen);
-void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code);
-unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq);
+void           Byte2Fb(const unsigned char* source,unsigned char* dest,unsigned numSource);
+uint32_t       matchSeq(const unsigned char* windowSP,const unsigned char* seqSP,const unsigned char* sourceSP,const unsigned char* enSP);
+int            lzbCompress(const unsigned char* source,unsigned numSource,LZSeq* lzseq);
+void           genLzbHufTree(LZSeq* lzseq,unsigned seqLen,unsigned char* litTree,unsigned char* distTree,unsigned char* codeLen);
+void           huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned char* code);
+unsigned       lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq);
 unsigned char* combCode(unsigned char* code1,unsigned numCode1,unsigned char* code2,unsigned numCode2,unsigned char* uniCode);
-unsigned tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq);
-int LZBPrepare(LZB* lzb);
-int genBitstream(LZB* lzb);
+unsigned       tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq);
+int            LZBPrepare(LZB* lzb);
+unsigned       assembBits(unsigned char* Bitstream,unsigned* bias,unsigned char code,unsigned char codeWidth);
+void           reverseBytes(unsigned char* Bitstream,unsigned numByte);
+int            genBitstream(LZB* lzb);
 #endif

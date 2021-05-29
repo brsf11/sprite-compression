@@ -352,12 +352,69 @@ int LZBPrepare(LZB* lzb)
     return 1;
 }
 
-unsigned assembBits(unsigned char* Bitstream)
+unsigned assembBits(unsigned char* Bitstream,unsigned* bias,unsigned char code,unsigned char codeWidth)
 {
+    if(*bias+codeWidth<8)
+    {
+        *Bitstream |= code << (8-*bias-codeWidth);
+        *bias += codeWidth;
+        return 0;
+    }
+    else
+    {
+        *Bitstream     |= code >> (*bias+codeWidth-8);
+        *(Bitstream+1) |= code << (16-*bias-codeWidth);
+        *bias += codeWidth-8;
+        return 1;
+    }
+}
 
+void reverseBytes(unsigned char* Bitstream,unsigned numByte)
+{
+    int i;
+    unsigned char temp;
+    for(i=0;i<numByte;i++)
+    {
+        temp = ((*(Bitstream+i) & 0x80) >> 7 ) |
+               ((*(Bitstream+i) & 0x40) >> 5 ) |
+               ((*(Bitstream+i) & 0x20) >> 3 ) |
+               ((*(Bitstream+i) & 0x10) >> 1 ) |
+               ((*(Bitstream+i) & 0x08) << 1 ) |
+               ((*(Bitstream+i) & 0x04) << 3 ) |
+               ((*(Bitstream+i) & 0x02) << 5 ) |
+               ((*(Bitstream+i) & 0x01) << 7 );
+
+        *(Bitstream+i) = temp;
+    }
 }
 
 int genBitstream(LZB* lzb)
 {
+    unsigned char* ByteSP;
+    unsigned bias = 0;
+    int i;
+    ByteSP = lzb->Bitstream;
 
+    ByteSP += assembBits(ByteSP,&bias,lzb->Header,3);
+
+    for(i=0;i<10;i++)
+    {
+        ByteSP += assembBits(ByteSP,&bias,lzb->CCL[i],3);
+    }
+
+    for(i=0;i<lzb->numSq;i++)
+    {
+        ByteSP += assembBits(ByteSP,&bias,lzb->sqCode[lzb->uniSq[i]],lzb->CCL[lzb->uniSq[i]]);
+    }
+
+    for(i=0;i<lzb->seqLen;i++)
+    {
+        ByteSP += assembBits(ByteSP,&bias,lzb->uniCode[lzb->seq[i]],lzb->uniTree[lzb->seq[i]]);
+    }
+
+    ByteSP += assembBits(ByteSP,&bias,0,8-bias);
+
+    reverseBytes(lzb->Bitstream,ByteSP-lzb->Bitstream);
+
+    return ByteSP-lzb->Bitstream;
 }

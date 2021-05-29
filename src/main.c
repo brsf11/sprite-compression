@@ -38,6 +38,8 @@ int main()
     lzb.Bitstream = Bitstream;
 
     LZBPrepare(&lzb);
+
+    unsigned BSLen = genBitstream(&lzb);
     
     int i;
 
@@ -83,6 +85,15 @@ int main()
         printf("%2d",lzb.sqCode[i]);
     }
     printf("\n");
+
+
+    for(i=0;i<BSLen;i++)
+    {
+        printf("%2X ",lzb.Bitstream[i]);
+    }
+    printf("\n");
+
+
 
 
     return 0;
