@@ -14,20 +14,28 @@ typedef struct
 {
       unsigned char* source;
       unsigned numSource;
-      unsigned char* sorce_4b;
+      unsigned char* source_4b;
       LZSeq* lzseq;
       unsigned lzbSeqLen;
       unsigned char* codeLen;
-      unsigned char* litTree,distTree;
-      const unsigned char numLit  = 28;
-      const unsigned char numDist = 16;
-      unsigned char* litCode,distCode;
+      unsigned char* litTree;
+      unsigned char* distTree;
+      unsigned char* litCode;
+      unsigned char* distCode;
       unsigned seqLen;
       unsigned* seq;
-      unsigned char* uniTree,uniCode,uniSq;
+      unsigned char* uniTree;
+      unsigned char* uniCode;
+      unsigned char* uniSq;
       unsigned numSq;
-      unsigned char* CCL; 
+      unsigned char* CCL;
+      unsigned char* sqCode;
+      unsigned* sqHist;
+      unsigned sqCodeLen; 
 }LZB;
+
+static const unsigned char numLit  = 28;
+static const unsigned char numDist = 16;
 
 static const unsigned lzbLenOffTab[] = {
       6,   8,  10,  12,
@@ -60,5 +68,6 @@ void huffTree2Code(unsigned char* tree,unsigned numTree,unsigned numMax,unsigned
 unsigned lzb2Seq(LZSeq* lzseq,unsigned numSeq,unsigned* seq);
 unsigned char* combCode(unsigned char* code1,unsigned numCode1,unsigned char* code2,unsigned numCode2,unsigned char* uniCode);
 unsigned tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq);
+int LZBPrepare(LZB* lzb);
 int genBitstream(unsigned char* code,unsigned char* tree,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream,char bitSp);
 #endif

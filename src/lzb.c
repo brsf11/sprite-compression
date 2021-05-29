@@ -348,6 +348,40 @@ unsigned tree2Sq(unsigned char* tree,unsigned numTree,unsigned char* sq)
     return sqSP;
 }
 
+int LZBPrepare(LZB* lzb)
+{
+    Byte2Fb(lzb->source,lzb->source_4b,lzb->numSource);
+    lzb->lzbSeqLen = lzbCompress(lzb->source_4b,lzb->numSource*2,lzb->lzseq);
+
+    genLzbHufTree(lzb->lzseq,lzb->lzbSeqLen,lzb->litTree,lzb->distTree,lzb->codeLen);
+    
+    huffTree2Code(lzb->litTree,numLit,lzb->codeLen[0],lzb->litCode);
+    huffTree2Code(lzb->distTree,numDist,lzb->codeLen[1],lzb->distCode);
+
+    lzb->seqLen = lzb2Seq(lzb->lzseq,lzb->lzbSeqLen,lzb->seq);
+
+    combCode(lzb->litTree,numLit,lzb->distTree,numDist,lzb->uniTree);
+    combCode(lzb->litCode,numLit,lzb->distCode,numDist,lzb->uniCode);
+
+    lzb->numSq = tree2Sq(lzb->uniTree,numLit+numDist,lzb->uniSq);
+
+    int i;
+
+    for(i=0;i<10;i++)
+    {
+        lzb->sqHist[i] = 0;
+    }
+
+    for(i=0;i<lzb->numSq;i++)
+    {
+        lzb->sqHist[lzb->uniSq[i]]++;
+    }
+    lzb->sqCodeLen = packageMerge(7,10,lzb->sqHist,lzb->CCL);
+
+    huffTree2Code(lzb->CCL,10,lzb->sqCodeLen,lzb->sqCode);
+    return 1;
+}
+
 int genBitstream(unsigned char* code,unsigned char* tree,unsigned char numCode,unsigned* seq,unsigned numSeq,unsigned char* bitstream,char bitSp)
 {
 
