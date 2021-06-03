@@ -2,7 +2,7 @@
 #include<stdint.h>
 #include<stdio.h>
 
-void Byte2Fb(const unsigned char* source,unsigned char* dest,unsigned numSource)
+void Byte2Fb(unsigned char* source,unsigned char* dest,unsigned numSource)
 {
     int i;
     for(i=0;i<numSource;i++)
@@ -12,9 +12,9 @@ void Byte2Fb(const unsigned char* source,unsigned char* dest,unsigned numSource)
     }
 }
 
-uint32_t matchSeq(const unsigned char* windowSP,const unsigned char* seqSP,const unsigned char* sourceSP,const unsigned char* enSP)
+uint32_t matchSeq(unsigned char* windowSP,unsigned char* seqSP,unsigned char* sourceSP,unsigned char* enSP)
 {
-    unsigned len[256];
+    unsigned len[257];
     unsigned char* sp;
     sp = windowSP;
     while((sp >= sourceSP)&&(seqSP-sp <= 256))
@@ -31,8 +31,8 @@ uint32_t matchSeq(const unsigned char* windowSP,const unsigned char* seqSP,const
         len[windowSP-sp] = tempLen;
         sp-=2;
     }
-    unsigned char temp = 0;
-    unsigned char i;
+    unsigned temp = 0;
+    unsigned i;
     for(i=0;i<windowSP-sp;i+=2)
     {
         if(len[i]>len[temp])
@@ -40,11 +40,12 @@ uint32_t matchSeq(const unsigned char* windowSP,const unsigned char* seqSP,const
             temp = i;
         }
     }
+    
     len[temp] -= len[temp]%2;
     return (((uint32_t)temp+2)<<16) + len[temp];
 }
 
-int lzbCompress(const unsigned char* source,unsigned numSource,LZSeq* lzseq)
+int lzbCompress(unsigned char* source,unsigned numSource,LZSeq* lzseq)
 {
     unsigned char* ComPointer = source+2;
     unsigned SeqPointer = 0;
@@ -346,7 +347,7 @@ int LZBPrepare(LZB* lzb)
     {
         lzb->sqHist[lzb->uniSq[i]]++;
     }
-    lzb->sqCodeLen = packageMerge(7,10,lzb->sqHist,lzb->CCL);
+    lzb->sqCodeLen = packageMerge(4,10,lzb->sqHist,lzb->CCL);
 
     huffTree2Code(lzb->CCL,10,lzb->sqCodeLen,lzb->sqCode);
     return 1;
