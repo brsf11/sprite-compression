@@ -41,7 +41,7 @@ int main()
                                 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xff,0xff,0xff,0xff,0x00,0xff,0xff,0xff
                             };
     unsigned char source_4b[numS*2];
-    
+
     unsigned char codeLen[2];
     unsigned char litTree[29],distTree[16],uniTree[45];
     unsigned char uniSq[45];
@@ -52,7 +52,7 @@ int main()
 
     lzb.source    = source;
     lzb.numSource = numS;
-    
+
     lzb.source_4b = source_4b;
     lzb.lzseq     = lzseq;
     lzb.codeLen   = codeLen;
@@ -72,9 +72,12 @@ int main()
     LZBPrepare(&lzb);
 
     unsigned BSLen = genBitstream(&lzb);
-    
+
     int i;
 
+    printf("======\n");
+    printf("lzseq:\n");
+    printf("======\n");
     for(i=0;i<lzb.lzbSeqLen;i++)
     {
         if(lzb.lzseq[i].len != 0)
@@ -88,24 +91,46 @@ int main()
     }
     printf("\n");
 
+    printf("======\n");
+    printf("seq:\n");
+    printf("======\n");
     for(i=0;i<lzb.seqLen;i++)
     {
         printf("%2d",lzb.seq[i]);
     }
     printf("\n");
 
+    printf("======\n");
+    printf("unicode:\n");
+    printf("======\n");
+    for(i=0;i<29;i++)
+    {
+        printf(" %2d ",i+1);
+    }
+    for(i=0;i<16;i++)
+    {
+        printf(" %2d ",i+1);
+    }
+
+    printf("\n");
     for(i=0;i<45;i++)
     {
-        printf("%2d",lzb.uniCode[i]);
+        printf(" %2d ",lzb.uniCode[i]);
     }
     printf("\n");
 
+    printf("======\n");
+    printf("unitree:\n");
+    printf("======\n");
     for(i=0;i<45;i++)
     {
         printf("%d",lzb.uniTree[i]);
     }
     printf("\n");
 
+    printf("======\n");
+    printf("unisq:\n");
+    printf("======\n");
     for(i=0;i<lzb.numSq;i++)
     {
         printf("%d",lzb.uniSq[i]);
@@ -114,23 +139,32 @@ int main()
 
     for(i=0;i<10;i++)
     {
-        printf("%d",lzb.sqHist[i]);
+        printf(" %d ",lzb.sqHist[i]);
     }
     printf("\n");
 
+    printf("======\n");
+    printf("CCL:\n");
+    printf("======\n");
     for(i=0;i<10;i++)
     {
-        printf("%d",lzb.CCL[i]);
+        printf(" %d ",lzb.CCL[i]);
     }
     printf("\n");
 
+    printf("======\n");
+    printf("sqcode:\n");
+    printf("======\n");
     for(i=0;i<10;i++)
     {
-        printf("%2d",lzb.sqCode[i]);
+        printf(" %2d ",lzb.sqCode[i]);
     }
     printf("\n");
 
 
+    printf("======\n");
+    printf("bitstream:\n");
+    printf("======\n");
     for(i=0;i<BSLen;i++)
     {
         printf("%2X ",lzb.Bitstream[i]);
