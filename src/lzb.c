@@ -60,7 +60,7 @@ int lzbCompress(unsigned char* source,unsigned numSource,LZSeq* lzseq)
     while(ComPointer-source<numSource)
     {
         uint32_t matchRes = matchSeq(ComPointer-2,ComPointer,source,source+numSource-1);
-        unsigned len  = matchRes & 0x001f;
+        unsigned len  = matchRes & 0x01ff;
         unsigned dist = matchRes >> 16;
         if(len>=6)
         {
